@@ -1,8 +1,7 @@
 package com.nikhil.datasource.to.kafka.service;
 
-import com.nikhil.config.DatasourceToKafkaServiceConfigData;
+import com.nikhil.datasource.to.kafka.service.init.StreamInitializer;
 import com.nikhil.datasource.to.kafka.service.runner.StreamRunner;
-import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -16,9 +15,9 @@ import org.springframework.context.annotation.ComponentScan;
 @Slf4j
 public class DatasourceToKafkaServiceApplication implements CommandLineRunner {
 
-  private final DatasourceToKafkaServiceConfigData datasourceToKafkaServiceConfigData;
-
   private final StreamRunner streamRunner;
+
+  private final StreamInitializer streamInitializer;
 
   public static void main(String[] args) {
     SpringApplication.run(DatasourceToKafkaServiceApplication.class, args);
@@ -27,8 +26,7 @@ public class DatasourceToKafkaServiceApplication implements CommandLineRunner {
   @Override
   public void run(String... args) {
     log.info("App starts...");
-    log.info(Arrays.toString(datasourceToKafkaServiceConfigData.getDatasourceKeywords().toArray(new String[]{})));
-    log.info(datasourceToKafkaServiceConfigData.getWelcomeMessage());
+    streamInitializer.init();
     streamRunner.start();
   }
 }
