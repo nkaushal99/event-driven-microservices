@@ -1,9 +1,17 @@
 package com.nikhil.datasource.to.kafka.service.runner.impl;
 
-import com.nikhil.datasource.to.kafka.service.config.DatasourceToKafkaServiceConfigData;
+import com.nikhil.config.DatasourceToKafkaServiceConfigData;
 import com.nikhil.datasource.to.kafka.service.exception.DatasourceToKafkaServiceException;
 import com.nikhil.datasource.to.kafka.service.listener.DatasourceKafkaStatusListener;
 import com.nikhil.datasource.to.kafka.service.runner.StreamRunner;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -12,16 +20,9 @@ import twitter4j.Status;
 import twitter4j.TwitterException;
 import twitter4j.TwitterObjectFactory;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
-
 @Component
 @ConditionalOnProperty(name = "datasource-to-kafka-service.enable-mock-data", havingValue = "true")
+@RequiredArgsConstructor
 public class MockTwitterStreamRunner implements StreamRunner {
 
   private static final Logger LOG = LoggerFactory.getLogger(MockTwitterStreamRunner.class);
@@ -65,12 +66,6 @@ public class MockTwitterStreamRunner implements StreamRunner {
       "}";
 
   private static final String TWITTER_STATUS_DATE_FORMAT = "EEE MMM dd HH:mm:ss zzz yyyy";
-
-  public MockTwitterStreamRunner(DatasourceToKafkaServiceConfigData configData,
-      DatasourceKafkaStatusListener statusListener) {
-    this.datasourceToKafkaServiceConfigData = configData;
-    this.datasourceKafkaStatusListener = statusListener;
-  }
 
   @Override
   public void start() {

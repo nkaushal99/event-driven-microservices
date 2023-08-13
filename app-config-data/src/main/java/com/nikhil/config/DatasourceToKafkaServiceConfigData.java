@@ -1,4 +1,4 @@
-package com.nikhil.datasource.to.kafka.service.config;
+package com.nikhil.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
