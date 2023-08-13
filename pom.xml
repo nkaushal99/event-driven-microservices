@@ -20,15 +20,40 @@
   <packaging>pom</packaging>
 
   <properties>
+    <avro.version>1.10.0</avro.version>
     <java.version>17</java.version>
-    <spring-boot.version>2.7.6</spring-boot.version>
-    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-    <twitter4j.version>4.0.7</twitter4j.version>
+    <kafka-avro-serializer.version>5.5.1</kafka-avro-serializer.version>
     <lombok.version>1.18.22</lombok.version>
+    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    <spring-boot.version>2.7.6</spring-boot.version>
+    <spring-cloud.version>2021.0.3</spring-cloud.version>
+    <twitter4j.version>4.0.7</twitter4j.version>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>confluent</id>
+      <url>https://packages.confluent.io/maven/</url>
+    </repository>
+  </repositories>
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.nikhil</groupId>
+        <artifactId>kafka-producer</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.nikhil</groupId>
+        <artifactId>kafka-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.nikhil</groupId>
+        <artifactId>kafka-admin</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <dependency>
         <groupId>com.nikhil</groupId>
         <artifactId>common-config</artifactId>
@@ -67,6 +92,34 @@
         <version>${lombok.version}</version>
         <scope>provided</scope>
       </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.confluent</groupId>
+        <artifactId>kafka-avro-serializer</artifactId>
+        <version>${kafka-avro-serializer.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -89,6 +142,26 @@
           <artifactId>spring-boot-maven-plugin</artifactId>
           <version>${spring-boot.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.avro</groupId>
+          <artifactId>avro-maven-plugin</artifactId>
+          <version>${avro.version}</version>
+          <configuration>
+            <stringType>String</stringType>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>generate-sources</phase>
+              <goals>
+                <goal>schema</goal>
+              </goals>
+              <configuration>
+                <sourceDirectory>${project.basedir}/src/main/resources/avro/</sourceDirectory>
+                <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -97,6 +170,7 @@
     <module>app-config-data</module>
     <module>common-config</module>
     <module>datasource-to-kafka-service</module>
+    <module>kafka</module>
   </modules>
 
 </project>
